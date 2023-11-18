@@ -1,3 +1,7 @@
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.LinkedList;
 
@@ -91,12 +95,11 @@ class Graph
     {
         Vertex vertex1 = get_vertex(name1);
         Vertex vertex2 = get_vertex(name2);
-        if (vertex1 == null || vertex2 == null) {
-            if (vertex1 == null)
-                vertex1 = create_vertex(name1);
-            if (vertex2 == null)
-                vertex2 = create_vertex(name2);
-        }
+        if (vertex1 == null)
+            vertex1 = create_vertex(name1);
+        if( vertex2 == null)
+            vertex2 = create_vertex(name2);
+
         add_edge(vertex1, vertex2);
     }
 
@@ -139,7 +142,7 @@ class Graph
     public Vertex get_vertex(String id)
     {
         for (Vertex v : Vertexs) {
-            if (v.get_name() == id)
+            if (v.get_name().equals(id))
                 return v;
         }
 
@@ -164,8 +167,34 @@ class Graph
         }
     }
 
-    public void fill_graph(Graph graph)
+    public void fill_graph(String file_name)
     {
+        try
+        {
+            String line = "";
 
+            FileReader reader = new FileReader(file_name); 
+            BufferedReader buff = new BufferedReader(reader);    
+            while ((line = buff.readLine()) != null) 
+            {
+                if (line.isEmpty()) continue;
+                else {
+                    String[] node_arr = line.split(" ");
+                    for (int i = 0; i < node_arr.length; i++) {
+                        if (i == 0) continue;
+                        insert(node_arr[0], node_arr[i]);
+                    }
+                }
+            }
+            buff.close();
+        }
+        catch (FileNotFoundException e) {
+            System.out.println("[!] File not found.");
+            return;
+        }  
+        catch (IOException e) {
+            System.out.println("Error.");
+            return;
+        } 
     }
 }
