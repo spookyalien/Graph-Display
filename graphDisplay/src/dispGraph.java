@@ -6,10 +6,10 @@ import java.awt.Graphics;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.HashMap;
 import java.util.Random;
-
-
+import java.lang.Math;
 
 class vector2
 {
@@ -26,43 +26,10 @@ class vector2
         this.x = x;
         this.y = y;
     }
-}
 
-class math_thread extends Thread 
-{
-    public boolean flag = false;
-    int x, y, radius, bound;
-    HashSet<Integer> coords;
-    Random rand;
-
-
-    public math_thread(int radius, int bound, HashSet<Integer> coords)
+    public double distance(vector2 input)
     {
-        this.radius = radius;
-        this.coords = coords;
-        this.bound = bound;
-        rand = new Random();
-        x = rand.nextInt(bound/2);
-        y = rand.nextInt(bound/2);
-    }
-
-    public void run() {
-        while (!flag) {
-            // Ensure entire node is shown within canvas
-            this.x = rand.nextInt(bound/2);
-            this.y = rand.nextInt(bound/2);
-            flag = Utility.check_bounds(this.x, this.y, (this.radius*2), this.coords);
-        }
-    }
-
-    public int get_x()
-    {
-        return this.x;
-    }
-
-    public int get_y()
-    {
-        return this.y;
+        return Math.sqrt((Math.pow(input.x-this.x, 2)+Math.pow(input.y-this.y, 2))); 
     }
 }
 
@@ -80,17 +47,19 @@ public class dispGraph extends JPanel
         HashSet<Integer> coords = new HashSet<Integer>();
         vector2 vec2 = new vector2();
         Color colour = Color.RED;
-        math_thread t1;
         int x = 0;
         int y = 0;
 
         for (Graph graph_to_paint : graphs) {
             g.setColor(colour);
-            for (Vertex v : graph_to_paint.get_vertex_set()) { 
-                y = rand.nextInt(canvas_size/2);
-                x = rand.nextInt(canvas_size/2);
+
+            for (Vertex node : graph_to_paint.get_vertex_set()) { 
+                while (!Utility.check_bounds(x, y, radius, coords)) {
+                    x = rand.nextInt(canvas_size - (diameter*2));
+                    y = rand.nextInt(canvas_size - (diameter*2));
+                }
                 vec2 = new vector2(x, y);
-                vertex_coords.put(v, vec2);
+                vertex_coords.put(node, vec2);
                 
                 coords.add(x);
                 coords.add(y);
@@ -110,7 +79,6 @@ public class dispGraph extends JPanel
             }
         }
     }
-    
     
     public static void main(String[] args)
     {
