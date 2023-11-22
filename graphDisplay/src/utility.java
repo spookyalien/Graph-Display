@@ -9,8 +9,7 @@ class Utility
         if ((x-bound) <= bound || (y-bound) <= bound) {
             return false;
         }
-        
-        System.out.println("(" + x + ", " + y + ")");
+
 
         for (int i = (x-bound); i < (x+bound); i++) {
             if (coords.contains(i)) flag1 = false;
